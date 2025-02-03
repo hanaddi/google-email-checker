@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Google Email Validation
 // @namespace    http://tampermonkey.net/
-// @version      1.0.2
+// @version      1.0.3
 // @description  Validate Google workplace email accounts
 // @author       hanaddi
 // @match        https://hanaddi.github.io/google-email-checker/*
@@ -131,6 +131,7 @@
         }
 
         if (!email) {
+            alert("Checking completed");
             return;
         }
 
