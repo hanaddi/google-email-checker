@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Google Email Validation
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.0.1
 // @description  Validate Google workplace email accounts
 // @author       hanaddi
 // @match        https://hanaddi.github.io/google-email-checker/*
@@ -28,7 +28,7 @@
 
     // https://hanaddi.github.io/google-email-checker
     if (window.location.href.includes('https://hanaddi.github.io/google-email-checker')) {
-        data_all = getObject(key_all_data);
+        data_all = getObject(key_all_data) ?? {emails:[], results:{}};
 
         document.body.innerHTML = "";
         const mainEl = document.createElement("div");
@@ -62,7 +62,7 @@
         btnReload.innerText = "Reload";
         mainEl.appendChild(btnReload);
         btnReload.onclick = ev => {
-            data_all = getObject(key_all_data);
+            data_all = getObject(key_all_data) ?? {emails:[], results:{}};
             loadTable(data_all);
         };
 
@@ -120,7 +120,7 @@
 
     if (window.location.href.includes('https://accounts.google.com/v3/signin/identifier')) {
 
-        data_all = getObject(key_all_data);
+        data_all = getObject(key_all_data)  ?? {emails:[], results:{}};
 
         let email = null;
         for (let e of data_all.emails) {
