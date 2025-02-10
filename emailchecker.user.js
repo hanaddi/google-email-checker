@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Google Email Validation
 // @namespace    http://tampermonkey.net/
-// @version      1.0.3
+// @version      1.0.4
 // @description  Validate Google workplace email accounts
 // @author       hanaddi
 // @match        https://hanaddi.github.io/google-email-checker/*
@@ -17,6 +17,7 @@
     let data_all = [];
     const key_all_data = "emailCheckValid";
     const redirectUrl = "https://accounts.google.com/o/oauth2/auth?operation=login&state=google-|https://medium.com/?access_type=online&client_id=216296035834-k1k6qe060s2tp2a2jam4ljdcms00sttg.apps.googleusercontent.com&redirect_uri=https://medium.com/m/callback/google&response_type=id_token token&scope=email openid profile";
+    // const redirectUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=305170416118-s4irvo6r3031hrshvff2no7rekqa431g.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fedbot.ai%2Flogin%2Fsuccess%2F&response_type=code&scope=openid+profile+email&include_granted_scopes=true&suppress_webview_warning=true&prompt=consent&access_type=offline";
 
     function getObject(key) {
         try {
@@ -150,10 +151,17 @@
         function tryValidateEmail() {
             try {
                 let url = window.location.href;
-                if (url.includes("https://accounts.google.com/v3/signin/identifier")) {
-                    throw "not ready";
-                }
+                //if (url.includes("https://accounts.google.com/v3/signin/identifier")) {
+                //    throw "not ready";
+                //}
                 if (url.includes("https://accounts.google.com/v3/signin/deletedaccount")) {
+                    data_all.results[email] = "deleted";
+                    GM_setValue(key_all_data, JSON.stringify(data_all));
+                    window.setTimeout(w => {
+                        window.location = redirectUrl;
+                    }, 1000);
+                }
+                if (document.body.innerText.includes("Couldn’t find your Google Account")) {
                     data_all.results[email] = "deleted";
                     GM_setValue(key_all_data, JSON.stringify(data_all));
                     window.setTimeout(w => {
@@ -175,6 +183,7 @@
                     }, 1000);
                 }
                 console.log("URL", url);
+                throw "unknown";
             } catch (e) {
                 console.error(e);
                 window.setTimeout(tryValidateEmail, 1000);
